@@ -7,16 +7,16 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 
-// const uri =
-//   "mongodb+srv://AfridaIslam0627:M6pmQD3kIOdCIy90@cluster0.5ylkwje.mongodb.net/?appName=Cluster0";
+const uri =
+  "mongodb+srv://AfridaIslam0627:M6pmQD3kIOdCIy90@cluster0.5ylkwje.mongodb.net/?appName=Cluster0";
 
-// const client = new MongoClient(uri, {
-//   serverApi: {
-//     version: ServerApiVersion.v1,
-//     strict: true,
-//     deprecationErrors: true,
-//   },
-// });
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
 
 async function run() {
   try {
@@ -28,10 +28,10 @@ async function run() {
       res.send("Hello ritu World!");
     });
 
-    // app.get("/data", async (req, res) => {
-    //   const result = await dataCollection.find().toArray();
-    //   res.send(result);
-    // });
+    app.get("/data", async (req, res) => {
+      const result = await dataCollection.find().toArray();
+      res.send(result);
+    });
 
     await client.db("admin").command({ ping: 1 });
     console.log(
