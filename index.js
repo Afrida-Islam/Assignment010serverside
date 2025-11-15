@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
 const port = 3000;
@@ -13,7 +13,6 @@ app.get("/", (req, res) => {
 const uri =
   "mongodb+srv://AfridaIslam0627:M6pmQD3kIOdCIy90@cluster0.5ylkwje.mongodb.net/?appName=Cluster0";
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -32,6 +31,27 @@ async function run() {
     app.get("/models", async (req, res) => {
       const result = await modelCollection.find().toArray();
       res.send(result);
+    });
+    app.get("/models/:id", async (req, res) => {
+      const { id } = req.params;
+      const objectId = new ObjectId(id);
+
+      const result = await modelCollection.findOne({ _id: objectId });
+
+      res.send({
+        success: true,
+        result,
+      });
+    });
+
+    app.post("/models", async (req, res) => {
+      const data = req.body;
+      // console.log(data)
+      const result = await modelCollection.insertOne(data);
+      res.send({
+        success: true,
+        result,
+      });
     });
 
     await client.db("admin").command({ ping: 1 });
