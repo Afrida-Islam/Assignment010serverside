@@ -27,7 +27,7 @@ async function run() {
 
     const db = client.db("model-db");
     const modelCollection = db.collection("models");
-
+    const enrollCollection = db.collection("enrolls");
     app.get("/models", async (req, res) => {
       const result = await modelCollection.find().toArray();
       res.send(result);
@@ -49,10 +49,33 @@ async function run() {
       // console.log(data)
       const result = await modelCollection.insertOne(data);
       res.send({
-        success: true,
+        succenoss: true,
         result,
       });
     });
+
+      app.put("/models/:id",  async (req, res) => {
+      const { id } = req.params;
+      const data = req.body;
+     
+      const objectId = new ObjectId(id);
+      const filter = { _id: objectId };
+      const update = {
+        $set: data,
+      };
+
+      const result = await modelCollection.updateOne(filter, update);
+
+      res.send({
+        success: true,
+        result,
+      });
+    });  
+
+    app.post ("/enrolls",async(req,res)=>{
+      const data =res.body  
+      const result =await enrollCollection.insertOne(data)res.send(result)
+    })
 
     await client.db("admin").command({ ping: 1 });
     console.log(
