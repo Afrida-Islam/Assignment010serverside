@@ -5,7 +5,12 @@ require("dotenv").config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://assignment010.vercel.app/"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // MongoDB Connection
@@ -19,15 +24,19 @@ const client = new MongoClient(uri, {
 });
 
 // Create a promise that resolves when the database is connected.
-const dbConnectPromise = client.connect().then(client => {
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+const dbConnectPromise = client
+  .connect()
+  .then((client) => {
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
     client.db("admin").command({ ping: 1 });
     return client.db("model-db");
-}).catch(err => {
+  })
+  .catch((err) => {
     console.error("Failed to connect to MongoDB", err);
     process.exit(1);
-});
-
+  });
 
 // Routes
 app.get("/", (req, res) => {
@@ -41,7 +50,9 @@ app.get("/models", async (req, res) => {
     const result = await modelCollection.find().toArray();
     res.send(result);
   } catch (error) {
-    res.status(500).send({ message: "Server error fetching models", error: error.message });
+    res
+      .status(500)
+      .send({ message: "Server error fetching models", error: error.message });
   }
 });
 
@@ -57,7 +68,10 @@ app.get("/models/:id", async (req, res) => {
       result,
     });
   } catch (error) {
-    res.status(500).send({ message: "Server error fetching model by id", error: error.message });
+    res.status(500).send({
+      message: "Server error fetching model by id",
+      error: error.message,
+    });
   }
 });
 
@@ -72,7 +86,9 @@ app.post("/models", async (req, res) => {
       result,
     });
   } catch (error) {
-    res.status(500).send({ message: "Server error creating model", error: error.message });
+    res
+      .status(500)
+      .send({ message: "Server error creating model", error: error.message });
   }
 });
 
@@ -86,7 +102,9 @@ app.get("/search", async (req, res) => {
       .toArray();
     res.send(result);
   } catch (error) {
-    res.status(500).send({ message: "Server error searching models", error: error.message });
+    res
+      .status(500)
+      .send({ message: "Server error searching models", error: error.message });
   }
 });
 
@@ -107,7 +125,9 @@ app.put("/models/:id", async (req, res) => {
       result,
     });
   } catch (error) {
-    res.status(500).send({ message: "Server error updating model", error: error.message });
+    res
+      .status(500)
+      .send({ message: "Server error updating model", error: error.message });
   }
 });
 
@@ -186,4 +206,3 @@ app.get("/my-enrolls", async (req, res) => {
 
 // Export the app for Vercel
 module.exports = app;
-
